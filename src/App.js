@@ -1,12 +1,8 @@
-import './App.css';
-import TodoList from './todolist'
+import Header from './common/header';
 
 function App() {
   return (
-    <div className="App">
-      <TodoList />
-      {/* <Game /> */}
-    </div>
+    <Header />
   );
 }
 
