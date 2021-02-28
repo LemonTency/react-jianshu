@@ -1,17 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
+import { actionCreator } from './store'
 import { HeaderWrapper, Logo, Nav, NavItem, NavSearch, Addition, Button, SearchWrapper } from './style'
 
 class Header extends Component {
-  constructor(props) {
-    super(props)
-    this.state = ({
-      focued: false
-    })
-    this.onHandleFocus = this.onHandleFocus.bind(this)
-    this.onHandleBlur = this.onHandleBlur.bind(this)
-  }
   render() {
+    const { focued } = this.props
     return (
       <HeaderWrapper>
         <Logo href="/" />
@@ -22,13 +17,13 @@ class Header extends Component {
           <NavItem className='right'><i className='iconfont'>&#xe636;</i></NavItem>
           <SearchWrapper>
             <CSSTransition
-              in={this.state.focued}
+              in={focued}
               timeout={200}
               classNames="slide"
             >
-              <NavSearch className={this.state.focued ? 'focued' : ''} onFocus={this.onHandleFocus} onBlur={this.onHandleBlur}></NavSearch>
+              <NavSearch className={focued ? 'focued' : ''} onFocus={this.props.onHandleFocus} onBlur={this.props.onHandleBlur}></NavSearch>
             </CSSTransition>
-            <i className={this.state.focued ? 'focued iconfont' : 'iconfont'}>&#xe63d;</i>
+            <i className={focued ? 'focued iconfont' : 'iconfont'}>&#xe63d;</i>
           </SearchWrapper>
           <Addition>
             <Button className="reg">注册</Button>
@@ -38,16 +33,24 @@ class Header extends Component {
       </HeaderWrapper>
     )
   }
-  onHandleFocus() {
-    this.setState({
-      focued: true
-    })
-  }
-  onHandleBlur() {
-    this.setState({
-      focued: false
-    })
+}
+
+const mapStateToProps = (state) => {
+  return {
+    focued: state.getIn(['header', 'focued'])
+    // state.get('header').get('focued')
   }
 }
 
-export default Header
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onHandleFocus() {
+      dispatch(actionCreator.searchFocusCreator())
+    },
+    onHandleBlur() {
+      dispatch(actionCreator.searchBlurCreator())
+    }
+  }
+}
+//connect和header建立链接
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
